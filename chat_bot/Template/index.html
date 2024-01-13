@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathon Chatbot</title>
+</head>
+
+<body>
+    <h1>Hackathon Chatbot</h1>
+    <div id="chat-container">
+        <div id="chat-box"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userMessage = document.getElementById('user-input').value;
+            const chatBox = document.getElementById('chat-box');
+
+            // Display user message
+            chatBox.innerHTML += `<div>User: ${userMessage}</div>`;
+
+            // Send user message to server
+            fetch('/api/chatbot', {
+                method: 'POST',
+                body: new URLSearchParams({ 'user_message': userMessage }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const botResponse = data.bot_response;
+                    // Display chatbot response
+                    chatBox.innerHTML += `<div>Chatbot: ${botResponse}</div>`;
+                });
+
+            // Clear input field
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+
+</html>
